@@ -8,7 +8,7 @@ import (
 	`github.com/storezhang/pangu`
 )
 
-func newClient(conf pangu.Config) (client *resty.Client, err error) {
+func newClient(conf *pangu.Config) (client *resty.Client, err error) {
 	config := new(config)
 	if err = conf.Struct(config); nil != err {
 		return
