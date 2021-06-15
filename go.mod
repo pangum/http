@@ -8,4 +8,4 @@ require (
 	github.com/storezhang/pangu v1.2.4
 )
 
-replace github.com/storezhang/pangu => ../../storezhang/pangu
+// replace github.com/storezhang/pangu => ../../storezhang/pangu
