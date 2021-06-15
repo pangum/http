@@ -7,16 +7,15 @@ import (
 	`github.com/storezhang/gox`
 )
 
-// ClientConfig 客户端配置
-type ClientConfig struct {
+type config struct {
 	// 超时
 	Timeout time.Duration `json:"timeout" yaml:"timeout"`
 	// 代理
 	Proxy gox.ProxyConfig `json:"proxy" yaml:"proxy" validate:"structonly"`
 	// 授权配置
 	Auth gox.AuthConfig `json:"auth" yaml:"auth" validate:"structonly"`
-	// 是否允许Get方法传输数据
-	AllowGetPayload bool `default:"true" json:"allowGetPayload" yaml:"allowGetPayload"`
+	// Body数据传输控制
+	Payload payload `json:"payload" yaml:"payload" validate:"structonly"`
 	// 秘钥配置
 	Certificate gox.CertificateConfig `json:"certificate" yaml:"certificate" validate:"structonly"`
 	// 通用的查询参数

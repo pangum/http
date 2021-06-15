@@ -8,66 +8,62 @@ import (
 	`github.com/storezhang/pangu`
 )
 
-func newClient(conf *pangu.Config) (client *resty.Client, err error) {
-	config := new(config)
-	if err = conf.Struct(config); nil != err {
+func newClient(config *pangu.Config) (restyClient *resty.Client, err error) {
+	panguConfig := new(panguConfig)
+	if err = config.Load(panguConfig); nil != err {
 		return
 	}
-	client = newClientWithConfig(config.Http.Client)
+	client := panguConfig.Http.Client
 
-	return
-}
-
-func newClientWithConfig(config ClientConfig) (client *resty.Client) {
-	client = resty.New()
-	if "" != config.Proxy.Host {
-		client.SetProxy(config.Proxy.Addr())
+	restyClient = resty.New()
+	if "" != client.Proxy.Host {
+		restyClient.SetProxy(client.Proxy.Addr())
 	}
-	if 0 != config.Timeout {
-		client.SetTimeout(config.Timeout)
+	if 0 != client.Timeout {
+		restyClient.SetTimeout(client.Timeout)
 	}
-	if config.AllowGetPayload {
-		client.SetAllowGetMethodPayload(true)
+	if client.Payload.Get {
+		restyClient.SetAllowGetMethodPayload(true)
 	}
-	if config.Certificate.Skip {
+	if client.Certificate.Skip {
 		// nolint:gosec
-		client.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true})
+		restyClient.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true})
 	} else {
-		if "" != config.Certificate.Root {
-			client.SetRootCertificate(config.Certificate.Root)
+		if "" != client.Certificate.Root {
+			restyClient.SetRootCertificate(client.Certificate.Root)
 		}
-		if 0 != len(config.Certificate.Clients) {
-			certificates := make([]tls.Certificate, 0, len(config.Certificate.Clients))
-			for _, c := range config.Certificate.Clients {
+		if 0 != len(client.Certificate.Clients) {
+			certificates := make([]tls.Certificate, 0, len(client.Certificate.Clients))
+			for _, c := range client.Certificate.Clients {
 				certificate, err := tls.LoadX509KeyPair(c.Public, c.Private)
 				if nil != err {
 					continue
 				}
 				certificates = append(certificates, certificate)
 			}
-			client.SetCertificates(certificates...)
+			restyClient.SetCertificates(certificates...)
 		}
 	}
-	if 0 != len(config.Headers) {
-		client.SetHeaders(config.Headers)
+	if 0 != len(client.Headers) {
+		restyClient.SetHeaders(client.Headers)
 	}
-	if 0 != len(config.Queries) {
-		client.SetQueryParams(config.Queries)
+	if 0 != len(client.Queries) {
+		restyClient.SetQueryParams(client.Queries)
 	}
-	if 0 != len(config.Forms) {
-		client.SetFormData(config.Forms)
+	if 0 != len(client.Forms) {
+		restyClient.SetFormData(client.Forms)
 	}
-	if 0 != len(config.Cookies) {
-		client.SetCookies(config.Cookies)
+	if 0 != len(client.Cookies) {
+		restyClient.SetCookies(client.Cookies)
 	}
-	if "" != config.Auth.Type {
-		switch config.Auth.Type {
+	if "" != client.Auth.Type {
+		switch client.Auth.Type {
 		case gox.AuthTypeBasic:
-			client.SetBasicAuth(config.Auth.Username, config.Auth.Password)
+			restyClient.SetBasicAuth(client.Auth.Username, client.Auth.Password)
 		case gox.AuthTypeToken:
-			client.SetAuthToken(config.Auth.Token)
-			if "" != config.Auth.Scheme {
-				client.SetAuthScheme(config.Auth.Scheme)
+			restyClient.SetAuthToken(client.Auth.Token)
+			if "" != client.Auth.Scheme {
+				restyClient.SetAuthScheme(client.Auth.Scheme)
 			}
 		}
 	}
