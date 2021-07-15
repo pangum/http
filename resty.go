@@ -8,33 +8,33 @@ import (
 	`github.com/storezhang/pangu`
 )
 
-func newClient(config *pangu.Config) (restyClient *resty.Client, err error) {
+func newClient(config *pangu.Config) (client *Client, err error) {
 	panguConfig := new(panguConfig)
 	if err = config.Load(panguConfig); nil != err {
 		return
 	}
-	client := panguConfig.Http.Client
+	clientConfig := panguConfig.Http.Client
 
-	restyClient = resty.New()
-	if "" != client.Proxy.Host {
-		restyClient.SetProxy(client.Proxy.Addr())
+	restyClient := resty.New()
+	if "" != clientConfig.Proxy.Host {
+		restyClient.SetProxy(clientConfig.Proxy.Addr())
 	}
-	if 0 != client.Timeout {
-		restyClient.SetTimeout(client.Timeout)
+	if 0 != clientConfig.Timeout {
+		restyClient.SetTimeout(clientConfig.Timeout)
 	}
-	if client.Payload.Get {
+	if clientConfig.Payload.Get {
 		restyClient.SetAllowGetMethodPayload(true)
 	}
-	if client.Certificate.Skip {
+	if clientConfig.Certificate.Skip {
 		// nolint:gosec
 		restyClient.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true})
 	} else {
-		if "" != client.Certificate.Root {
-			restyClient.SetRootCertificate(client.Certificate.Root)
+		if "" != clientConfig.Certificate.Root {
+			restyClient.SetRootCertificate(clientConfig.Certificate.Root)
 		}
-		if 0 != len(client.Certificate.Clients) {
-			certificates := make([]tls.Certificate, 0, len(client.Certificate.Clients))
-			for _, c := range client.Certificate.Clients {
+		if 0 != len(clientConfig.Certificate.Clients) {
+			certificates := make([]tls.Certificate, 0, len(clientConfig.Certificate.Clients))
+			for _, c := range clientConfig.Certificate.Clients {
 				certificate, err := tls.LoadX509KeyPair(c.Public, c.Private)
 				if nil != err {
 					continue
@@ -44,33 +44,34 @@ func newClient(config *pangu.Config) (restyClient *resty.Client, err error) {
 			restyClient.SetCertificates(certificates...)
 		}
 	}
-	if 0 != len(client.Headers) {
-		restyClient.SetHeaders(client.Headers)
+	if 0 != len(clientConfig.Headers) {
+		restyClient.SetHeaders(clientConfig.Headers)
 	}
-	if 0 != len(client.Queries) {
-		restyClient.SetQueryParams(client.Queries)
+	if 0 != len(clientConfig.Queries) {
+		restyClient.SetQueryParams(clientConfig.Queries)
 	}
-	if 0 != len(client.Forms) {
-		restyClient.SetFormData(client.Forms)
+	if 0 != len(clientConfig.Forms) {
+		restyClient.SetFormData(clientConfig.Forms)
 	}
-	if 0 != len(client.Cookies) {
-		restyClient.SetCookies(client.Cookies)
+	if 0 != len(clientConfig.Cookies) {
+		restyClient.SetCookies(clientConfig.Cookies)
 	}
-	if "" != client.Auth.Type {
-		switch client.Auth.Type {
+	if "" != clientConfig.Auth.Type {
+		switch clientConfig.Auth.Type {
 		case gox.AuthTypeBasic:
-			restyClient.SetBasicAuth(client.Auth.Username, client.Auth.Password)
+			restyClient.SetBasicAuth(clientConfig.Auth.Username, clientConfig.Auth.Password)
 		case gox.AuthTypeToken:
-			restyClient.SetAuthToken(client.Auth.Token)
-			if "" != client.Auth.Scheme {
-				restyClient.SetAuthScheme(client.Auth.Scheme)
+			restyClient.SetAuthToken(clientConfig.Auth.Token)
+			if "" != clientConfig.Auth.Scheme {
+				restyClient.SetAuthScheme(clientConfig.Auth.Scheme)
 			}
 		}
 	}
+	client = &Client{Client: restyClient}
 
 	return
 }
 
-func newRequest(client *resty.Client) *resty.Request {
-	return client.R()
+func newRequest(client *Client) *Request {
+	return &Request{Request: client.R()}
 }
