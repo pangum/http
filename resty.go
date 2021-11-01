@@ -3,9 +3,8 @@ package http
 import (
 	`crypto/tls`
 
-	`github.com/go-resty/resty/v2`
+	`github.com/pangum/pangu`
 	`github.com/storezhang/gox`
-	`github.com/storezhang/pangu`
 )
 
 func newClient(config *pangu.Config) (client *Client, err error) {
