@@ -1,9 +1,9 @@
 package http
 
 import (
-	`github.com/go-resty/resty/v2`
-	`github.com/storezhang/gox`
-	`github.com/storezhang/gox/field`
+	"github.com/go-resty/resty/v2"
+	"github.com/goexl/gox"
+	"github.com/goexl/gox/field"
 )
 
 type responseFields struct {

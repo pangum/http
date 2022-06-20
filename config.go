@@ -1,10 +1,10 @@
 package http
 
 import (
-	`net/http`
-	`time`
+	"net/http"
+	"time"
 
-	`github.com/storezhang/gox`
+	"github.com/goexl/gox"
 )
 
 type config struct {
