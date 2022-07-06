@@ -63,7 +63,7 @@ func newClient(config *pangu.Config) (client *Client, err error) {
 		case gox.AuthTypeToken:
 			restyClient.SetAuthToken(clientConfig.Auth.Token)
 			if `` != clientConfig.Auth.Scheme {
-				restyClient.SetAuthScheme(clientConfig.Auth.Scheme)
+				restyClient.SetAuthScheme(string(clientConfig.Auth.Scheme))
 			}
 		}
 	}

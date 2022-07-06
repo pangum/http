@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/go-resty/resty/v2 v2.7.0
-	github.com/goexl/gox v0.0.7
+	github.com/goexl/gox v0.0.8
 	github.com/pangum/pangu v0.1.3
 )
 
