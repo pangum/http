@@ -10,14 +10,14 @@ type responseFields struct {
 	response *resty.Response
 }
 
-func (f *responseFields) Fields() (fields gox.Fields) {
-	if nil == f.response {
+func (rf *responseFields) Fields() (fields gox.Fields[any]) {
+	if nil == rf.response {
 		return
 	}
 
-	fields = []gox.Field{
-		field.Int(`code`, f.response.StatusCode()),
-		field.String(`body`, string(f.response.Body())),
+	fields = gox.Fields[any]{
+		field.New("code", rf.response.StatusCode()),
+		field.New("body", string(rf.response.Body())),
 	}
 
 	return

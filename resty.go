@@ -4,7 +4,6 @@ import (
 	"crypto/tls"
 
 	"github.com/go-resty/resty/v2"
-	"github.com/goexl/gox"
 	"github.com/pangum/pangu"
 )
 
@@ -58,9 +57,9 @@ func newClient(config *pangu.Config) (client *Client, err error) {
 	}
 	if `` != clientConfig.Auth.Type {
 		switch clientConfig.Auth.Type {
-		case gox.AuthTypeBasic:
+		case authTypeBasic:
 			restyClient.SetBasicAuth(clientConfig.Auth.Username, clientConfig.Auth.Password)
-		case gox.AuthTypeToken:
+		case authTypeToken:
 			restyClient.SetAuthToken(clientConfig.Auth.Token)
 			if `` != clientConfig.Auth.Scheme {
 				restyClient.SetAuthScheme(string(clientConfig.Auth.Scheme))
