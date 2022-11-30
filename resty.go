@@ -15,32 +15,34 @@ func newClient(config *pangu.Config) (client *Client, err error) {
 	clientConfig := _panguConfig.Http.Client
 
 	restyClient := resty.New()
-	if `` != clientConfig.Proxy.Host {
+	if nil != clientConfig.Proxy {
 		restyClient.SetProxy(clientConfig.Proxy.Addr())
 	}
 	if 0 != clientConfig.Timeout {
 		restyClient.SetTimeout(clientConfig.Timeout)
 	}
-	if clientConfig.Payload.Get {
-		restyClient.SetAllowGetMethodPayload(true)
+	if nil != clientConfig.Payload {
+		restyClient.SetAllowGetMethodPayload(clientConfig.Payload.Get)
 	}
-	if clientConfig.Certificate.Skip {
-		// nolint:gosec
-		restyClient.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true})
-	} else {
-		if `` != clientConfig.Certificate.Root {
-			restyClient.SetRootCertificate(clientConfig.Certificate.Root)
-		}
-		if 0 != len(clientConfig.Certificate.Clients) {
-			certificates := make([]tls.Certificate, 0, len(clientConfig.Certificate.Clients))
-			for _, c := range clientConfig.Certificate.Clients {
-				certificate, certificateErr := tls.LoadX509KeyPair(c.Public, c.Private)
-				if nil != certificateErr {
-					continue
-				}
-				certificates = append(certificates, certificate)
+	if nil != clientConfig.Certificate {
+		if clientConfig.Certificate.Skip {
+			// nolint:gosec
+			restyClient.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true})
+		} else {
+			if "" != clientConfig.Certificate.Root {
+				restyClient.SetRootCertificate(clientConfig.Certificate.Root)
 			}
-			restyClient.SetCertificates(certificates...)
+			if 0 != len(clientConfig.Certificate.Clients) {
+				certificates := make([]tls.Certificate, 0, len(clientConfig.Certificate.Clients))
+				for _, c := range clientConfig.Certificate.Clients {
+					certificate, certificateErr := tls.LoadX509KeyPair(c.Public, c.Private)
+					if nil != certificateErr {
+						continue
+					}
+					certificates = append(certificates, certificate)
+				}
+				restyClient.SetCertificates(certificates...)
+			}
 		}
 	}
 	if 0 != len(clientConfig.Headers) {
@@ -55,7 +57,7 @@ func newClient(config *pangu.Config) (client *Client, err error) {
 	if 0 != len(clientConfig.Cookies) {
 		restyClient.SetCookies(clientConfig.Cookies)
 	}
-	if "" != clientConfig.Auth.Type {
+	if nil != clientConfig.Auth {
 		switch clientConfig.Auth.Type {
 		case authTypeBasic:
 			restyClient.SetBasicAuth(clientConfig.Auth.Username, clientConfig.Auth.Password)

@@ -9,13 +9,13 @@ type config struct {
 	// 超时
 	Timeout time.Duration `json:"timeout" yaml:"timeout" xml:"timeout" toml:"timeout"`
 	// 代理
-	Proxy proxy `json:"proxy" yaml:"proxy" xml:"proxy" toml:"proxy" validate:"structonly"`
+	Proxy *proxy `json:"proxy" yaml:"proxy" xml:"proxy" toml:"proxy"`
 	// 授权配置
-	Auth auth `json:"auth" yaml:"auth" xml:"auth" toml:"auth" validate:"structonly"`
+	Auth *auth `json:"auth" yaml:"auth" xml:"auth" toml:"auth"`
 	// Body数据传输控制
-	Payload payload `json:"payload" yaml:"payload" xml:"payload" toml:"payload" validate:"structonly"`
+	Payload *payload `json:"payload" yaml:"payload" xml:"payload" toml:"payload"`
 	// 秘钥配置
-	Certificate certificate `json:"certificate" yaml:"certificate" xml:"certificate" toml:"certificate" validate:"structonly"`
+	Certificate *certificate `json:"certificate" yaml:"certificate" xml:"certificate" toml:"certificate"`
 	// 通用的查询参数
 	Queries map[string]string `json:"queries" yaml:"queries" xml:"queries" toml:"queries"`
 	// 表单参数
