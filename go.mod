@@ -4,8 +4,8 @@ go 1.19
 
 require (
 	github.com/go-resty/resty/v2 v2.7.0
-	github.com/goexl/gox v0.1.4
-	github.com/pangum/pangu v0.2.8
+	github.com/goexl/gox v0.1.6
+	github.com/pangum/pangu v0.2.9
 )
 
 require (
@@ -19,9 +19,9 @@ require (
 	github.com/goexl/env v0.0.2 // indirect
 	github.com/goexl/exc v0.0.5 // indirect
 	github.com/goexl/gfx v0.1.6 // indirect
-	github.com/goexl/mengpo v0.2.2 // indirect
+	github.com/goexl/mengpo v0.2.3 // indirect
 	github.com/goexl/simaqian v0.2.0 // indirect
-	github.com/goexl/xiren v0.0.4 // indirect
+	github.com/goexl/xiren v0.0.5 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/pelletier/go-toml v1.9.5 // indirect
