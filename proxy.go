@@ -9,27 +9,25 @@ import (
 
 type proxy struct {
 	// Host 主机（可以是Ip或者域名）
-	Host string `json:"ip" yaml:"ip" validate:"required"`
-	// Port 端口
-	Port int `default:"80" json:"port" yaml:"port" validate:"required"`
+	Host string `json:"host" yaml:"host" xml:"host" toml:"host" validate:"required"`
 	// Scheme 代理类型
-	Scheme gox.UriScheme `default:"scheme" json:"scheme" yaml:"type" validate:"required,oneof=socks4 socks5 http https"`
+	Scheme gox.UriScheme `default:"scheme" json:"scheme" yaml:"scheme" xml:"scheme" toml:"scheme" validate:"required,oneof=socks4 socks5 http https"`
 	// Username 代理认证用户名
-	Username string `json:"username" yaml:"username"`
+	Username string `json:"username" yaml:"username" xml:"username" toml:"username"`
 	// Password 代理认证密码
-	Password string `json:"password" yaml:"password"`
+	Password string `json:"password" yaml:"password" xml:"password" toml:"password"`
 }
 
 func (p *proxy) Addr() (addr string) {
 	if "" != p.Username && "" != p.Password {
 		addr = fmt.Sprintf(
-			"%s://%s:%s@%s:%d",
+			"%s://%s:%s@%s",
 			p.Scheme,
 			url.QueryEscape(p.Username), url.QueryEscape(p.Password),
-			p.Host, p.Port,
+			p.Host,
 		)
 	} else {
-		addr = fmt.Sprintf("%s://%s:%d", p.Scheme, p.Host, p.Port)
+		addr = fmt.Sprintf("%s://%s", p.Scheme, p.Host)
 	}
 
 	return

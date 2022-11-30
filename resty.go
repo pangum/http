@@ -55,13 +55,13 @@ func newClient(config *pangu.Config) (client *Client, err error) {
 	if 0 != len(clientConfig.Cookies) {
 		restyClient.SetCookies(clientConfig.Cookies)
 	}
-	if `` != clientConfig.Auth.Type {
+	if "" != clientConfig.Auth.Type {
 		switch clientConfig.Auth.Type {
 		case authTypeBasic:
 			restyClient.SetBasicAuth(clientConfig.Auth.Username, clientConfig.Auth.Password)
 		case authTypeToken:
 			restyClient.SetAuthToken(clientConfig.Auth.Token)
-			if `` != clientConfig.Auth.Scheme {
+			if "" != clientConfig.Auth.Scheme {
 				restyClient.SetAuthScheme(string(clientConfig.Auth.Scheme))
 			}
 		}
