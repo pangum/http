@@ -10,6 +10,8 @@ type config struct {
 	Timeout time.Duration `json:"timeout" yaml:"timeout" xml:"timeout" toml:"timeout"`
 	// 代理
 	Proxy *proxy `json:"proxy" yaml:"proxy" xml:"proxy" toml:"proxy"`
+	// 代理列表
+	Proxies []*proxy `json:"proxies" yaml:"proxies" xml:"proxies" toml:"proxies"`
 	// 授权配置
 	Auth *auth `json:"auth" yaml:"auth" xml:"auth" toml:"auth"`
 	// Body数据传输控制

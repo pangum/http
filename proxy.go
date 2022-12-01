@@ -8,17 +8,19 @@ import (
 )
 
 type proxy struct {
-	// Host 主机（可以是Ip或者域名）
+	// 主机
 	Host string `json:"host" yaml:"host" xml:"host" toml:"host" validate:"required"`
-	// Scheme 代理类型
+	// 代理类型
 	Scheme gox.UriScheme `default:"scheme" json:"scheme" yaml:"scheme" xml:"scheme" toml:"scheme" validate:"required,oneof=socks4 socks5 http https"`
-	// Username 代理认证用户名
+	// 目标
+	Target string `json:"target" yaml:"target" xml:"target" toml:"target"`
+	// 代理认证用户名
 	Username string `json:"username" yaml:"username" xml:"username" toml:"username"`
-	// Password 代理认证密码
+	// 代理认证密码
 	Password string `json:"password" yaml:"password" xml:"password" toml:"password"`
 }
 
-func (p *proxy) Addr() (addr string) {
+func (p *proxy) addr() (addr string) {
 	if "" != p.Username && "" != p.Password {
 		addr = fmt.Sprintf(
 			"%s://%s:%s@%s",

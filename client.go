@@ -1,6 +1,8 @@
 package http
 
 import (
+	"net/url"
+
 	"github.com/go-resty/resty/v2"
 	"github.com/goexl/gox"
 	"github.com/goexl/gox/field"
@@ -10,17 +12,25 @@ import (
 type Client struct {
 	*resty.Client
 
-	proxy *proxy
-	auth  *auth
+	proxies map[string]*proxy
 }
 
-func _newClient(client *resty.Client, proxy *proxy, auth *auth) *Client {
-	return &Client{
+func _newClient(client *resty.Client, proxies []*proxy) (_client *Client) {
+	_proxies := make(map[string]*proxy)
+	for _, _proxy := range proxies {
+		_proxies[_proxy.Target] = _proxy
+	}
+
+	_client = &Client{
 		Client: client,
 
-		proxy: proxy,
-		auth:  auth,
+		proxies: _proxies,
 	}
+	// 设置动态代理
+	client.OnBeforeRequest(_client.beforeRequest)
+	client.OnAfterResponse(_client.afterResponse)
+
+	return
 }
 
 func (c *Client) Fields(rsp *resty.Response) (fields gox.Fields[any]) {
@@ -33,8 +43,35 @@ func (c *Client) Fields(rsp *resty.Response) (fields gox.Fields[any]) {
 		field.New("code", rsp.StatusCode()),
 		field.New("body", string(rsp.Body())),
 	}
-	if c.IsProxySet() {
-		fields = append(fields, field.New("proxy", c.proxy.Addr()))
+
+	return
+}
+
+func (c *Client) beforeRequest(client *resty.Client, req *resty.Request) (err error) {
+	if host, he := c.host(req.URL); nil != he {
+		err = he
+	} else if _proxy, ok := c.proxies[host]; ok {
+		client.SetProxy(_proxy.addr())
+	}
+
+	return
+}
+
+func (c *Client) afterResponse(client *resty.Client, rsp *resty.Response) (err error) {
+	if host, he := c.host(rsp.Request.URL); nil != he {
+		err = he
+	} else if _, ok := c.proxies[host]; ok {
+		client.RemoveProxy()
+	}
+
+	return
+}
+
+func (c *Client) host(raw string) (host string, err error) {
+	if _url, ue := url.Parse(raw); nil != ue {
+		err = ue
+	} else {
+		host = _url.Host
 	}
 
 	return
