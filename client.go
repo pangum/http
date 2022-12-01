@@ -17,6 +17,7 @@ func (c *Client) Fields(rsp *resty.Response) (fields gox.Fields[any]) {
 	}
 
 	fields = gox.Fields[any]{
+		field.New("url", rsp.Request.URL),
 		field.New("code", rsp.StatusCode()),
 		field.New("body", string(rsp.Body())),
 	}
