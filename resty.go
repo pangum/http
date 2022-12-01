@@ -68,7 +68,7 @@ func newClient(config *pangu.Config) (client *Client, err error) {
 			}
 		}
 	}
-	client = &Client{Client: restyClient}
+	client = _newClient(restyClient, clientConfig.Proxy, client.auth)
 
 	return
 }
