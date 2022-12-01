@@ -50,19 +50,17 @@ func (c *Client) Fields(rsp *resty.Response) (fields gox.Fields[any]) {
 func (c *Client) beforeRequest(client *resty.Client, req *resty.Request) (err error) {
 	if host, he := c.host(req.URL); nil != he {
 		err = he
-	} else if _proxy, ok := c.proxies[host]; ok {
+	} else if _proxy, hostOk := c.proxies[host]; hostOk {
+		client.SetProxy(_proxy.addr())
+	} else if _proxy, defaultOk := c.proxies[targetDefault]; defaultOk {
 		client.SetProxy(_proxy.addr())
 	}
 
 	return
 }
 
-func (c *Client) afterResponse(client *resty.Client, rsp *resty.Response) (err error) {
-	if host, he := c.host(rsp.Request.URL); nil != he {
-		err = he
-	} else if _, ok := c.proxies[host]; ok {
-		client.RemoveProxy()
-	}
+func (c *Client) afterResponse(client *resty.Client, _ *resty.Response) (err error) {
+	client.RemoveProxy()
 
 	return
 }
