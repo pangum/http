@@ -89,14 +89,25 @@ func newClient(config *pangu.Config, logger *logging.Logger) (client *Client, er
 	}
 
 	// 设置动态代理
-	if nil != _config.Proxy {
-		client.proxies[targetDefault] = _config.Proxy
+	if nil != _config.Proxy && "" == _config.Proxy.Target && 0 == len(_config.Proxies) {
+		addr := _config.Proxy.addr()
+		client.SetProxy(addr)
+		logger.Debug("设置通用代理服务器", field.New("proxy", addr))
+	} else {
+		if nil != _config.Proxy {
+			target := gox.If("" == _config.Proxy.Target, targetDefault, _config.Proxy.Target)
+			client.proxies[target] = _config.Proxy
+		}
+		for _, _proxy := range _config.Proxies {
+			client.proxies[_proxy.Target] = _proxy
+		}
 	}
-	for _, _proxy := range _config.Proxies {
-		client.proxies[_proxy.Target] = _proxy
+	// 动态代理
+	if 0 != len(client.proxies) {
+		client.OnBeforeRequest(client.beforeRequest)
+		client.OnAfterResponse(client.afterResponse)
 	}
-	client.OnBeforeRequest(client.beforeRequest)
-	client.OnAfterResponse(client.afterResponse)
+	// 记录日志
 	client.SetPreRequestHook(client.preRequest)
 
 	return
