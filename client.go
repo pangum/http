@@ -104,11 +104,11 @@ func newClient(config *pangu.Config, logger *logging.Logger) (client *Client, er
 	}
 	// 动态代理
 	if 0 != len(client.proxies) {
-		client.OnBeforeRequest(client.beforeRequest)
-		client.OnAfterResponse(client.afterResponse)
+		client.OnBeforeRequest(client.setProxy)
+		client.OnAfterResponse(client.unsetProxy)
 	}
 	// 记录日志
-	client.SetPreRequestHook(client.preRequest)
+	client.SetPreRequestHook(client.log)
 
 	return
 }
@@ -131,7 +131,7 @@ func (c *Client) Fields(rsp *resty.Response) (fields gox.Fields[any]) {
 	return
 }
 
-func (c *Client) preRequest(_ *resty.Client, req *http.Request) (err error) {
+func (c *Client) log(_ *resty.Client, req *http.Request) (err error) {
 	fields := gox.Fields[any]{
 		field.New("url", req.URL),
 	}
@@ -155,7 +155,7 @@ func (c *Client) preRequest(_ *resty.Client, req *http.Request) (err error) {
 	return
 }
 
-func (c *Client) beforeRequest(client *resty.Client, req *resty.Request) (err error) {
+func (c *Client) setProxy(client *resty.Client, req *resty.Request) (err error) {
 	if host, he := c.host(req.URL); nil != he {
 		err = he
 	} else if hp, hostOk := c.proxies[host]; hostOk {
@@ -171,7 +171,7 @@ func (c *Client) beforeRequest(client *resty.Client, req *resty.Request) (err er
 	return
 }
 
-func (c *Client) afterResponse(client *resty.Client, _ *resty.Response) (err error) {
+func (c *Client) unsetProxy(client *resty.Client, _ *resty.Response) (err error) {
 	client.RemoveProxy()
 
 	return
