@@ -151,7 +151,7 @@ func (c *Client) log(_ *resty.Client, req *http.Request) (err error) {
 	}
 
 	for key, value := range req.Header {
-		fields = append(fields, field.New(fmt.Sprintf("header.%s", key), c.bashEscape(strings.Join(value, " "))))
+		fields = append(fields, field.New(fmt.Sprintf("header.%s", key), value))
 	}
 	c.logger.Debug("向服务器发送请求", fields...)
 
