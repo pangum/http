@@ -3,6 +3,7 @@ package http
 import (
 	"bytes"
 	"crypto/tls"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -140,7 +141,7 @@ func (c *Client) log(_ *resty.Client, req *http.Request) (err error) {
 			err = re
 		} else {
 			req.Body = nopCloser{bytes.NewBuffer(body)}
-			fields = append(fields, field.New("body", c.bashEscape(string(body))))
+			fields = append(fields, field.New[json.RawMessage]("body", body))
 		}
 	}
 	if nil != err {
