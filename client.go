@@ -44,7 +44,7 @@ func newClient(config *pangu.Config, logger *logging.Logger) (client *Client, er
 	if nil != _config.Payload {
 		client.SetAllowGetMethodPayload(_config.Payload.Get)
 	}
-	if nil != _config.Certificate&&*_config.Certificate.Enabled {
+	if nil != _config.Certificate && *_config.Certificate.Enabled {
 		if _config.Certificate.Skip {
 			// nolint:gosec
 			client.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true})
@@ -151,7 +151,11 @@ func (c *Client) log(_ *resty.Client, req *http.Request) (err error) {
 	}
 
 	for key, value := range req.Header {
-		fields = append(fields, field.New(fmt.Sprintf("header.%s", key), value))
+		if 1 == len(value) {
+			fields = append(fields, field.New(fmt.Sprintf("header.%s", key), value[0]))
+		} else if 1 < len(value) {
+			fields = append(fields, field.New(fmt.Sprintf("header.%s", key), value))
+		}
 	}
 	c.logger.Debug("向服务器发送请求", fields...)
 
