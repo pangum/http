@@ -5,6 +5,8 @@ import (
 )
 
 type auth struct {
+	// 是否开启
+	Enabled *bool `default:"true" json:"enabled" yaml:"enabled" xml:"enabled" toml:"enabled"`
 	// 授权类型
 	Type authType `default:"type" json:"type" yaml:"type" xml:"type" toml:"type" validate:"oneof=basic token"`
 	// 用户名

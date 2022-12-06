@@ -8,6 +8,8 @@ import (
 )
 
 type proxy struct {
+	// 是否开启
+	Enabled *bool `default:"true" json:"enabled" yaml:"enabled" xml:"enabled" toml:"enabled"`
 	// 主机
 	Host string `json:"host" yaml:"host" xml:"host" toml:"host" validate:"required"`
 	// 代理类型

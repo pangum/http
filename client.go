@@ -44,7 +44,7 @@ func newClient(config *pangu.Config, logger *logging.Logger) (client *Client, er
 	if nil != _config.Payload {
 		client.SetAllowGetMethodPayload(_config.Payload.Get)
 	}
-	if nil != _config.Certificate {
+	if nil != _config.Certificate&&*_config.Certificate.Enabled {
 		if _config.Certificate.Skip {
 			// nolint:gosec
 			client.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true})
@@ -77,7 +77,7 @@ func newClient(config *pangu.Config, logger *logging.Logger) (client *Client, er
 	if 0 != len(_config.Cookies) {
 		client.SetCookies(_config.Cookies)
 	}
-	if nil != _config.Auth {
+	if nil != _config.Auth && *_config.Auth.Enabled {
 		switch _config.Auth.Type {
 		case authTypeBasic:
 			client.SetBasicAuth(_config.Auth.Username, _config.Auth.Password)
@@ -90,17 +90,19 @@ func newClient(config *pangu.Config, logger *logging.Logger) (client *Client, er
 	}
 
 	// 设置动态代理
-	if nil != _config.Proxy && "" == _config.Proxy.Target && 0 == len(_config.Proxies) {
+	if nil != _config.Proxy && *_config.Proxy.Enabled && "" == _config.Proxy.Target && 0 == len(_config.Proxies) {
 		addr := _config.Proxy.addr()
 		client.SetProxy(addr)
 		logger.Debug("设置通用代理服务器", field.New("proxy", addr))
 	} else {
-		if nil != _config.Proxy {
+		if nil != _config.Proxy && *_config.Proxy.Enabled {
 			target := gox.If("" == _config.Proxy.Target, targetDefault, _config.Proxy.Target)
 			client.proxies[target] = _config.Proxy
 		}
 		for _, _proxy := range _config.Proxies {
-			client.proxies[_proxy.Target] = _proxy
+			if *_proxy.Enabled {
+				client.proxies[_proxy.Target] = _proxy
+			}
 		}
 	}
 	// 动态代理
