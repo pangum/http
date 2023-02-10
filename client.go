@@ -96,7 +96,7 @@ func newClient(config *pangu.Config, logger *logging.Logger) (client *Client, er
 		logger.Debug("设置通用代理服务器", field.New("proxy", addr))
 	} else {
 		if nil != _config.Proxy && *_config.Proxy.Enabled {
-			target := gox.If("" == _config.Proxy.Target, targetDefault, _config.Proxy.Target)
+			target := gox.Ifx("" == _config.Proxy.Target, targetDefault, _config.Proxy.Target)
 			client.proxies[target] = _config.Proxy
 		}
 		for _, _proxy := range _config.Proxies {
