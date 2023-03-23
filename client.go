@@ -22,11 +22,11 @@ import (
 type Client struct {
 	*resty.Client
 
-	logger  *logging.Logger
+	logger  logging.Logger
 	proxies map[string]*proxy
 }
 
-func newClient(config *pangu.Config, logger *logging.Logger) (client *Client, err error) {
+func newClient(config *pangu.Config, logger logging.Logger) (client *Client, err error) {
 	_panguConfig := new(panguConfig)
 	if err = config.Load(_panguConfig); nil != err {
 		return
@@ -96,7 +96,7 @@ func newClient(config *pangu.Config, logger *logging.Logger) (client *Client, er
 		logger.Debug("设置通用代理服务器", field.New("proxy", addr))
 	} else {
 		if nil != _config.Proxy && *_config.Proxy.Enabled {
-			target := gox.Ifx("" == _config.Proxy.Target, targetDefault, _config.Proxy.Target)
+			target := gox.Ift("" == _config.Proxy.Target, targetDefault, _config.Proxy.Target)
 			client.proxies[target] = _config.Proxy
 		}
 		for _, _proxy := range _config.Proxies {
