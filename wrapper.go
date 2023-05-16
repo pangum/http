@@ -1,7 +1,6 @@
 package http
 
-type panguConfig struct {
-	// Http配置
+type wrapper struct {
 	Http struct {
 		// 客户端配置
 		Client config `json:"client" yaml:"client" xml:"client" toml:"client" validate:"required"`

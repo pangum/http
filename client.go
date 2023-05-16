@@ -24,82 +24,83 @@ type Client struct {
 
 	logger  logging.Logger
 	proxies map[string]*proxy
+	_       gox.CannotCopy
 }
 
 func newClient(config *pangu.Config, logger logging.Logger) (client *Client, err error) {
-	_panguConfig := new(panguConfig)
-	if err = config.Load(_panguConfig); nil != err {
+	wrap := new(wrapper)
+	if err = config.Load(wrap); nil != err {
 		return
 	}
-	_config := _panguConfig.Http.Client
 
+	conf := wrap.Http.Client
 	client = new(Client)
 	client.Client = resty.New()
 	client.logger = logger
 	client.proxies = make(map[string]*proxy)
 
-	if 0 != _config.Timeout {
-		client.SetTimeout(_config.Timeout)
+	if 0 != conf.Timeout {
+		client.SetTimeout(conf.Timeout)
 	}
-	if nil != _config.Payload {
-		client.SetAllowGetMethodPayload(_config.Payload.Get)
+	if nil != conf.Payload {
+		client.SetAllowGetMethodPayload(conf.Payload.Get)
 	}
-	if nil != _config.Certificate && *_config.Certificate.Enabled {
-		if _config.Certificate.Skip {
+	if nil != conf.Certificate && *conf.Certificate.Enabled {
+		if conf.Certificate.skipped() {
 			// nolint:gosec
 			client.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true})
 		} else {
-			if "" != _config.Certificate.Root {
-				client.SetRootCertificate(_config.Certificate.Root)
+			if "" != conf.Certificate.Root {
+				client.SetRootCertificate(conf.Certificate.Root)
 			}
-			if 0 != len(_config.Certificate.Clients) {
-				certificates := make([]tls.Certificate, 0, len(_config.Certificate.Clients))
-				for _, c := range _config.Certificate.Clients {
-					certificate, certificateErr := tls.LoadX509KeyPair(c.Public, c.Private)
-					if nil != certificateErr {
+			if 0 != len(conf.Certificate.Clients) {
+				certificates := make([]tls.Certificate, 0, len(conf.Certificate.Clients))
+				for _, c := range conf.Certificate.Clients {
+					cert, ce := tls.LoadX509KeyPair(c.Public, c.Private)
+					if nil != ce {
 						continue
 					}
-					certificates = append(certificates, certificate)
+					certificates = append(certificates, cert)
 				}
 				client.SetCertificates(certificates...)
 			}
 		}
 	}
-	if 0 != len(_config.Headers) {
-		client.SetHeaders(_config.Headers)
+	if 0 != len(conf.Headers) {
+		client.SetHeaders(conf.Headers)
 	}
-	if 0 != len(_config.Queries) {
-		client.SetQueryParams(_config.Queries)
+	if 0 != len(conf.Queries) {
+		client.SetQueryParams(conf.Queries)
 	}
-	if 0 != len(_config.Forms) {
-		client.SetFormData(_config.Forms)
+	if 0 != len(conf.Forms) {
+		client.SetFormData(conf.Forms)
 	}
-	if 0 != len(_config.Cookies) {
-		client.SetCookies(_config.Cookies)
+	if 0 != len(conf.Cookies) {
+		client.SetCookies(conf.Cookies)
 	}
-	if nil != _config.Auth && *_config.Auth.Enabled {
-		switch _config.Auth.Type {
+	if nil != conf.Auth && *conf.Auth.Enabled {
+		switch conf.Auth.Type {
 		case authTypeBasic:
-			client.SetBasicAuth(_config.Auth.Username, _config.Auth.Password)
+			client.SetBasicAuth(conf.Auth.Username, conf.Auth.Password)
 		case authTypeToken:
-			client.SetAuthToken(_config.Auth.Token)
-			if "" != _config.Auth.Scheme {
-				client.SetAuthScheme(string(_config.Auth.Scheme))
+			client.SetAuthToken(conf.Auth.Token)
+			if "" != conf.Auth.Scheme {
+				client.SetAuthScheme(string(conf.Auth.Scheme))
 			}
 		}
 	}
 
 	// 设置动态代理
-	if nil != _config.Proxy && *_config.Proxy.Enabled && "" == _config.Proxy.Target && 0 == len(_config.Proxies) {
-		addr := _config.Proxy.addr()
+	if nil != conf.Proxy && *conf.Proxy.Enabled && "" == conf.Proxy.Target && 0 == len(conf.Proxies) {
+		addr := conf.Proxy.addr()
 		client.SetProxy(addr)
 		logger.Debug("设置通用代理服务器", field.New("proxy", addr))
 	} else {
-		if nil != _config.Proxy && *_config.Proxy.Enabled {
-			target := gox.Ift("" == _config.Proxy.Target, targetDefault, _config.Proxy.Target)
-			client.proxies[target] = _config.Proxy
+		if nil != conf.Proxy && *conf.Proxy.Enabled {
+			target := gox.Ift("" == conf.Proxy.Target, targetDefault, conf.Proxy.Target)
+			client.proxies[target] = conf.Proxy
 		}
-		for _, _proxy := range _config.Proxies {
+		for _, _proxy := range conf.Proxies {
 			if *_proxy.Enabled {
 				client.proxies[_proxy.Target] = _proxy
 			}
