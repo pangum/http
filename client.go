@@ -85,7 +85,7 @@ func newClient(config *pangu.Config, logger logging.Logger) (client *Client, err
 		case authTypeToken:
 			client.SetAuthToken(conf.Auth.Token)
 			if "" != conf.Auth.Scheme {
-				client.SetAuthScheme(string(conf.Auth.Scheme))
+				client.SetAuthScheme(conf.Auth.Scheme)
 			}
 		}
 	}
