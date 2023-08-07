@@ -1,23 +1,25 @@
-package http
+package core
 
 import (
 	"net/http"
 	"time"
+
+	"github.com/pangum/http/internal/config"
 )
 
-type config struct {
+type Config struct {
 	// 超时
 	Timeout time.Duration `json:"timeout" yaml:"timeout" xml:"timeout" toml:"timeout"`
 	// 代理
-	Proxy *proxy `json:"proxy" yaml:"proxy" xml:"proxy" toml:"proxy"`
+	Proxy *config.Proxy `json:"Proxy" yaml:"Proxy" xml:"Proxy" toml:"Proxy"`
 	// 代理列表
-	Proxies []*proxy `json:"proxies" yaml:"proxies" xml:"proxies" toml:"proxies"`
+	Proxies []*config.Proxy `json:"proxies" yaml:"proxies" xml:"proxies" toml:"proxies"`
 	// 授权配置
-	Auth *auth `json:"auth" yaml:"auth" xml:"auth" toml:"auth"`
+	Auth *config.Auth `json:"Auth" yaml:"Auth" xml:"Auth" toml:"Auth"`
 	// Body数据传输控制
-	Payload *payload `json:"payload" yaml:"payload" xml:"payload" toml:"payload"`
+	Payload *config.Payload `json:"Payload" yaml:"Payload" xml:"Payload" toml:"Payload"`
 	// 秘钥配置
-	Certificate *certificate `json:"certificate" yaml:"certificate" xml:"certificate" toml:"certificate"`
+	Certificate *config.Certificate `json:"Certificate" yaml:"Certificate" xml:"Certificate" toml:"Certificate"`
 	// 通用的查询参数
 	Queries map[string]string `json:"queries" yaml:"queries" xml:"queries" toml:"queries"`
 	// 表单参数

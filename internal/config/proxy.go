@@ -1,11 +1,11 @@
-package http
+package config
 
 import (
 	"fmt"
 	"net/url"
 )
 
-type proxy struct {
+type Proxy struct {
 	// 是否开启
 	Enabled *bool `default:"true" json:"enabled" yaml:"enabled" xml:"enabled" toml:"enabled"`
 	// 主机
@@ -21,7 +21,7 @@ type proxy struct {
 	Password string `json:"password" yaml:"password" xml:"password" toml:"password"`
 }
 
-func (p *proxy) addr() (addr string) {
+func (p *Proxy) Addr() (addr string) {
 	if "" != p.Username && "" != p.Password {
 		addr = fmt.Sprintf(
 			"%s://%s:%s@%s",

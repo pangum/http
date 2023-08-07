@@ -1,10 +1,10 @@
-package http
+package config
 
-type auth struct {
+type Auth struct {
 	// 是否开启
 	Enabled *bool `default:"true" json:"enabled" yaml:"enabled" xml:"enabled" toml:"enabled"`
 	// 授权类型
-	Type authType `default:"type" json:"type" yaml:"type" xml:"type" toml:"type" validate:"oneof=basic token"`
+	Type AuthType `default:"type" json:"type" yaml:"type" xml:"type" toml:"type" validate:"oneof=basic token"`
 	// 用户名
 	Username string `json:"username" yaml:"username" xml:"username" toml:"username"`
 	// 密码

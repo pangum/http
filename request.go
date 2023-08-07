@@ -1,10 +1,8 @@
 package http
 
 import (
-	`github.com/go-resty/resty/v2`
+	"github.com/pangum/http/internal/plugin"
 )
 
-// Request 请求封装
-type Request struct {
-	*resty.Request
-}
+// Request 请求
+type Request = plugin.Request
