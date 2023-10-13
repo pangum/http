@@ -2,7 +2,6 @@ package plugin
 
 import (
 	"github.com/goexl/http"
-	"github.com/goexl/simaqian"
 	"github.com/pangum/http/internal/core"
 	"github.com/pangum/pangu"
 )
@@ -11,19 +10,19 @@ type Creator struct {
 	// 用于提供构造方法
 }
 
-func (c *Creator) New(loader *pangu.Config, logger simaqian.Logger) (client *http.Client, err error) {
+func (c *Creator) New(loader *pangu.Config) (client *http.Client, err error) {
 	wrapper := new(core.Wrapper)
 	if le := loader.Load(wrapper); nil != le {
 		err = le
 	} else {
-		client = c.new(&wrapper.Http.Client, logger)
+		client = c.new(&wrapper.Http.Client)
 	}
 
 	return
 }
 
-func (c *Creator) new(config *core.Config, logger simaqian.Logger) *http.Client {
-	builder := http.New().Payload(*config.Payload).Timeout(config.Timeout).Logger(logger)
+func (c *Creator) new(config *core.Config) *http.Client {
+	builder := http.New().Payload(*config.Payload).Timeout(config.Timeout)
 	builder = builder.Headers(config.Headers)
 	builder = builder.Forms(config.Forms)
 	builder = builder.Queries(config.Queries)
