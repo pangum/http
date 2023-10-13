@@ -33,9 +33,8 @@ func (c *Creator) new(config *core.Config, logger simaqian.Logger) *http.Client 
 	}
 	pb := builder.Proxy()
 	for _, proxy := range config.Proxies {
-		pb = pb.Host(proxy.Host).Target(proxy.Target).Scheme(proxy.Scheme).Basic(proxy.Username, proxy.Password)
+		pb.Host(proxy.Host).Target(proxy.Target).Scheme(proxy.Scheme).Basic(proxy.Username, proxy.Password).Build()
 	}
-	_ = pb.Build()
 
 	if nil != config.Auth && config.Auth.Enable() {
 		conf := config.Auth
