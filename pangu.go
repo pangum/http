@@ -6,8 +6,8 @@ import (
 )
 
 func init() {
+	creator := new(plugin.Creator)
 	pangu.New().Dependencies(
-		plugin.NewClient,
-		plugin.NewRequest,
+		creator.New,
 	)
 }

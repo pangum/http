@@ -1,8 +1,8 @@
 package http
 
 import (
-	"github.com/pangum/http/internal/plugin"
+	"github.com/goexl/http"
 )
 
 // Client 客户端
-type Client = plugin.Client
+type Client = http.Client

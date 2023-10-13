@@ -1,10 +1,5 @@
 package config
 
-import (
-	"fmt"
-	"net/url"
-)
-
 type Proxy struct {
 	// 是否开启
 	Enabled *bool `default:"true" json:"enabled" yaml:"enabled" xml:"enabled" toml:"enabled"`
@@ -19,19 +14,4 @@ type Proxy struct {
 	Username string `json:"username" yaml:"username" xml:"username" toml:"username"`
 	// 代理认证密码
 	Password string `json:"password" yaml:"password" xml:"password" toml:"password"`
-}
-
-func (p *Proxy) Addr() (addr string) {
-	if "" != p.Username && "" != p.Password {
-		addr = fmt.Sprintf(
-			"%s://%s:%s@%s",
-			p.Scheme,
-			url.QueryEscape(p.Username), url.QueryEscape(p.Password),
-			p.Host,
-		)
-	} else {
-		addr = fmt.Sprintf("%s://%s", p.Scheme, p.Host)
-	}
-
-	return
 }

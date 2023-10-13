@@ -11,6 +11,6 @@ type Certificate struct {
 	Clients []ClientCertificate `json:"clients" yaml:"clients" xml:"clients" toml:"clients" validate:"structonly"`
 }
 
-func (c *Certificate) Skipped() bool {
-	return nil != c.Skip && *c.Skip
+func (c *Certificate) Enable() bool {
+	return nil == c.Enabled || *c.Enabled
 }
