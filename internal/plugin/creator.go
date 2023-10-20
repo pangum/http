@@ -10,10 +10,10 @@ type Creator struct {
 	// 用于提供构造方法
 }
 
-func (c *Creator) New(loader *pangu.Config) (client *http.Client, err error) {
+func (c *Creator) New(config *pangu.Config) (client *http.Client, err error) {
 	wrapper := new(core.Wrapper)
-	if le := loader.Load(wrapper); nil != le {
-		err = le
+	if ge := config.Build().Get(wrapper); nil != ge {
+		err = ge
 	} else {
 		client = c.new(&wrapper.Http.Client)
 	}
