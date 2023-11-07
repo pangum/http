@@ -3,7 +3,7 @@ module github.com/pangum/http
 go 1.21
 
 require (
-	github.com/goexl/http v0.0.6
+	github.com/goexl/http v0.0.7
 	github.com/pangum/pangu v0.3.9
 )
 
