@@ -1,4 +1,4 @@
-package core
+package plugin
 
 type Wrapper struct {
 	Http struct {

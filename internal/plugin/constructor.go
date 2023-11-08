@@ -2,7 +2,6 @@ package plugin
 
 import (
 	"github.com/goexl/http"
-	"github.com/pangum/http/internal/core"
 	"github.com/pangum/pangu"
 )
 
@@ -11,7 +10,7 @@ type Constructor struct {
 }
 
 func (c *Constructor) New(config *pangu.Config) (client *http.Client, err error) {
-	wrapper := new(core.Wrapper)
+	wrapper := new(Wrapper)
 	if ge := config.Build().Get(wrapper); nil != ge {
 		err = ge
 	} else {
@@ -21,7 +20,7 @@ func (c *Constructor) New(config *pangu.Config) (client *http.Client, err error)
 	return
 }
 
-func (c *Constructor) new(config *core.Config) *http.Client {
+func (c *Constructor) new(config *Config) *http.Client {
 	builder := http.New().Payload(*config.Payload).Timeout(config.Timeout)
 	builder = builder.Headers(config.Headers)
 	builder = builder.Forms(config.Forms)
@@ -44,7 +43,7 @@ func (c *Constructor) new(config *core.Config) *http.Client {
 		_ = ab.Scheme(conf.Scheme).Token(conf.Token).Basic(conf.Username, conf.Password).Build()
 	}
 
-	if nil != config.Certificate && config.Certificate.Enable() {
+	if config.Certificate.Enable() {
 		conf := config.Certificate
 		cb := builder.Certificate()
 		cb = cb.Skip(*conf.Skip).Root(conf.Root)

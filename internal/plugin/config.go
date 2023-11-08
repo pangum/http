@@ -1,4 +1,4 @@
-package core
+package plugin
 
 import (
 	"net/http"
@@ -19,7 +19,7 @@ type Config struct {
 	// Body数据传输控制
 	Payload *bool `default:"true" json:"payload" yaml:"payload" xml:"payload" toml:"payload"`
 	// 秘钥配置
-	Certificate *config.Certificate `json:"Certificate" yaml:"Certificate" xml:"Certificate" toml:"Certificate"`
+	Certificate config.Certificate `json:"certificate" yaml:"certificate" xml:"certificate" toml:"certificate"`
 	// 通用的查询参数
 	Queries map[string]string `json:"queries" yaml:"queries" xml:"queries" toml:"queries"`
 	// 表单参数
