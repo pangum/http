@@ -6,11 +6,11 @@ import (
 	"github.com/pangum/pangu"
 )
 
-type Creator struct {
-	// 用于提供构造方法
+type Constructor struct {
+	// 构造方法
 }
 
-func (c *Creator) New(config *pangu.Config) (client *http.Client, err error) {
+func (c *Constructor) New(config *pangu.Config) (client *http.Client, err error) {
 	wrapper := new(core.Wrapper)
 	if ge := config.Build().Get(wrapper); nil != ge {
 		err = ge
@@ -21,7 +21,7 @@ func (c *Creator) New(config *pangu.Config) (client *http.Client, err error) {
 	return
 }
 
-func (c *Creator) new(config *core.Config) *http.Client {
+func (c *Constructor) new(config *core.Config) *http.Client {
 	builder := http.New().Payload(*config.Payload).Timeout(config.Timeout)
 	builder = builder.Headers(config.Headers)
 	builder = builder.Forms(config.Forms)
@@ -32,7 +32,10 @@ func (c *Creator) new(config *core.Config) *http.Client {
 	}
 	pb := builder.Proxy()
 	for _, proxy := range config.Proxies {
-		pb.Host(proxy.Host).Target(proxy.Target).Scheme(proxy.Scheme).Basic(proxy.Username, proxy.Password).Build()
+		pb.Host(proxy.Host).Target(proxy.Target).Exclude(proxy.Exclude).
+			Scheme(proxy.Scheme).
+			Basic(proxy.Username, proxy.Password).
+			Build()
 	}
 
 	if nil != config.Auth && config.Auth.Enable() {

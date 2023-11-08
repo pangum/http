@@ -10,6 +10,8 @@ type Proxy struct {
 	Scheme string `default:"scheme" json:"scheme" yaml:"scheme" xml:"scheme" toml:"scheme" validate:"required,oneof=socks4 socks5 http https"`
 	// 目标
 	Target string `json:"target" yaml:"target" xml:"target" toml:"target"`
+	// 排除
+	Exclude string `json:"exclude" yaml:"exclude" xml:"exclude" toml:"exclude"`
 	// 代理认证用户名
 	Username string `json:"username" yaml:"username" xml:"username" toml:"username"`
 	// 代理认证密码
