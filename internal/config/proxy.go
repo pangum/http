@@ -9,7 +9,7 @@ type Proxy struct {
 	Port int `json:"port" yaml:"port" xml:"port" toml:"port" validate:"omitempty,min=1,max=65535"`
 	// 代理类型
 	// nolint: lll
-	Scheme string `default:"scheme" json:"scheme" yaml:"scheme" xml:"scheme" toml:"scheme" validate:"required,oneof=socks4 socks5 http https"`
+	Scheme string `default:"http" json:"scheme" yaml:"scheme" xml:"scheme" toml:"scheme" validate:"required,oneof=socks4 socks5 http https"`
 	// 目标
 	Target string `json:"target" yaml:"target" xml:"target" toml:"target"`
 	// 排除

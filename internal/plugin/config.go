@@ -15,7 +15,7 @@ type Config struct {
 	// 代理列表
 	Proxies []*config.Proxy `default:"[]" json:"proxies" yaml:"proxies" xml:"proxies" toml:"proxies"`
 	// 授权配置
-	Auth *config.Auth `json:"Auth" yaml:"Auth" xml:"Auth" toml:"Auth"`
+	Auth *config.Auth `json:"auth" yaml:"auth" xml:"auth" toml:"auth"`
 	// Body数据传输控制
 	Payload *bool `default:"true" json:"payload" yaml:"payload" xml:"payload" toml:"payload"`
 	// 秘钥配置
