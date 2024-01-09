@@ -4,7 +4,9 @@ type Proxy struct {
 	// 是否开启
 	Enabled *bool `default:"true" json:"enabled" yaml:"enabled" xml:"enabled" toml:"enabled"`
 	// 主机
-	Host string `json:"host" yaml:"host" xml:"host" toml:"host" validate:"required"`
+	Host string `json:"host" yaml:"host" xml:"host" toml:"host" validate:"required,hostname,ip"`
+	// 端口
+	Port int `json:"port" yaml:"port" xml:"port" toml:"port" validate:"omitempty,min=1,max=65535"`
 	// 代理类型
 	// nolint: lll
 	Scheme string `default:"scheme" json:"scheme" yaml:"scheme" xml:"scheme" toml:"scheme" validate:"required,oneof=socks4 socks5 http https"`

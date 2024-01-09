@@ -29,11 +29,11 @@ func (c *Constructor) new(config *Config) *http.Client {
 	if nil != config.Proxy {
 		config.Proxies = append(config.Proxies, config.Proxy)
 	}
-	pb := builder.Proxy()
-	for _, proxy := range config.Proxies {
-		pb.Host(proxy.Host).Target(proxy.Target).Exclude(proxy.Exclude).
-			Scheme(proxy.Scheme).
-			Basic(proxy.Username, proxy.Password).
+	proxy := builder.Proxy()
+	for _, conf := range config.Proxies {
+		proxy.Host(conf.Host).Port(conf.Port).Target(conf.Target).Exclude(conf.Exclude).
+			Scheme(conf.Scheme).
+			Basic(conf.Username, conf.Password).
 			Build()
 	}
 
