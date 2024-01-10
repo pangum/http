@@ -21,10 +21,11 @@ func (c *Constructor) New(config *pangu.Config) (client *http.Client, err error)
 }
 
 func (c *Constructor) new(config *Config) *http.Client {
-	builder := http.New().Payload(*config.Payload).Timeout(config.Timeout)
-	builder = builder.Headers(config.Headers)
-	builder = builder.Forms(config.Forms)
-	builder = builder.Queries(config.Queries)
+	builder := http.New().Payload(*config.Payload).Timeout(config.Timeout).
+		Headers(config.Headers).
+		Forms(config.Forms).
+		Queries(config.Queries).
+		Warning(config.Warning)
 
 	if nil != config.Proxy {
 		config.Proxies = append(config.Proxies, config.Proxy)
@@ -39,18 +40,18 @@ func (c *Constructor) new(config *Config) *http.Client {
 
 	if nil != config.Auth && config.Auth.Enable() {
 		conf := config.Auth
-		ab := builder.Auth()
-		_ = ab.Scheme(conf.Scheme).Token(conf.Token).Basic(conf.Username, conf.Password).Build()
+		auth := builder.Auth()
+		_ = auth.Scheme(conf.Scheme).Token(conf.Token).Basic(conf.Username, conf.Password).Build()
 	}
 
 	if config.Certificate.Enable() {
 		conf := config.Certificate
-		cb := builder.Certificate()
-		cb = cb.Skip(*conf.Skip).Root(conf.Root)
+		certificate := builder.Certificate()
+		certificate = certificate.Skip(*conf.Skip).Root(conf.Root)
 		for _, client := range conf.Clients {
-			cb = cb.Client(client.Public, client.Private)
+			certificate = certificate.Client(client.Public, client.Private)
 		}
-		_ = cb.Build()
+		_ = certificate.Build()
 	}
 
 	return builder.Build()

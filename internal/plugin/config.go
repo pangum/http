@@ -18,6 +18,8 @@ type Config struct {
 	Auth *config.Auth `json:"auth" yaml:"auth" xml:"auth" toml:"auth"`
 	// Body数据传输控制
 	Payload *bool `default:"true" json:"payload" yaml:"payload" xml:"payload" toml:"payload"`
+	// 警告消息
+	Warning bool `json:"warning" yaml:"warning" xml:"warning" toml:"warning"`
 	// 秘钥配置
 	Certificate config.Certificate `json:"certificate" yaml:"certificate" xml:"certificate" toml:"certificate"`
 	// 通用的查询参数
