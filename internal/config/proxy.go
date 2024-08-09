@@ -19,3 +19,7 @@ type Proxy struct {
 	// 代理认证密码
 	Password string `json:"password" yaml:"password" xml:"password" toml:"password"`
 }
+
+func (p *Proxy) Checked() bool {
+	return nil != p.Enabled && *p.Enabled
+}

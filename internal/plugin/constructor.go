@@ -27,14 +27,18 @@ func (c *Constructor) new(config *Config) *http.Client {
 		Queries(config.Queries).
 		Warning(config.Warning)
 
-	if nil != config.Proxy {
+	if nil != config.Proxy && config.Proxy.Checked() {
 		config.Proxies = append(config.Proxies, config.Proxy)
 	}
 	proxy := builder.Proxy()
-	for _, conf := range config.Proxies {
-		proxy.Host(conf.Host).Port(conf.Port).Target(conf.Target).Exclude(conf.Exclude).
-			Scheme(conf.Scheme).
-			Basic(conf.Username, conf.Password).
+	for _, server := range config.Proxies {
+		if !server.Checked() {
+			continue
+		}
+
+		proxy.Host(server.Host).Port(server.Port).Target(server.Target).Exclude(server.Exclude).
+			Scheme(server.Scheme).
+			Basic(server.Username, server.Password).
 			Build()
 	}
 
