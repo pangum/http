@@ -6,7 +6,7 @@ type Certificate struct {
 	// 是否跳过证书检查
 	Skip *bool `default:"true" json:"skip" yaml:"skip" xml:"skip" toml:"skip"`
 	// 根秘钥文件路径
-	Root string `json:"root" yaml:"root" validate:"file"`
+	Root string `json:"root" yaml:"root" validate:"omitempty,file"`
 	// 客户端
 	Clients []ClientCertificate `json:"clients" yaml:"clients" xml:"clients" toml:"clients" validate:"structonly"`
 }
