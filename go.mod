@@ -5,7 +5,7 @@ toolchain go1.24.1
 
 require (
 	github.com/goexl/http v0.2.1
-	github.com/pangum/pangu v1.6.0
+	github.com/pangum/pangu v1.6.3
 )
 
 require (
